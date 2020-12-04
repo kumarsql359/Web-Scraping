@@ -1,0 +1,38 @@
+Sub Module1()
+    ' declare the variables
+    Dim ieObj As InternetExplorer
+    Dim htmlEle As IHTMLElement
+    Dim i As Integer
+   
+    ' initialize i to one
+    i = 1
+   
+    ' create and get access to an instance of IE
+    Set ieObj = New InternetExplorer
+    ieObj.Visible = True
+    ieObj.navigate "https://www.srfax.com/sign-in/"
+    
+    MsgBox "Please login"
+    
+    For x = 1 To 100
+    ieObj.navigate "https://www.srfax.com/client/faxesSent.php?p=" & x
+    
+   
+    ' give the webpage some time to load all content
+    Application.Wait Now + TimeValue("00:00:05")
+   
+    ' loop through all the rows in the table
+    For Each htmlEle In ieObj.document.getElementsByClassName("table table-striped table-responsive ")(0).getElementsByTagName("tr")
+        With ActiveSheet
+            .Range("A" & i).Value = htmlEle.Children(1).textContent
+            .Range("B" & i).Value = htmlEle.Children(2).textContent
+            .Range("C" & i).Value = htmlEle.Children(3).textContent
+            .Range("D" & i).Value = htmlEle.Children(4).textContent
+            .Range("E" & i).Value = htmlEle.Children(5).textContent
+            .Range("F" & i).Value = htmlEle.Children(6).textContent
+        End With
+       
+        i = i + 1
+    Next htmlEle
+   Next x
+End Sub
